@@ -1,0 +1,8 @@
+---
+
+- name: Restart NeoFS HTTP service
+  ansible.builtin.systemd:
+    name: "neofs-http{{ neofs_http__instance }}.service"
+    state: 'restarted'
+    enabled: yes
+    daemon_reload: yes

@@ -1,0 +1,90 @@
+---
+
+# User and group for NeoFS HTTP GW to run and own files
+neofs_http__user: "neofs-http{{ neofs_http__instance }}"
+neofs_http__group: "neofs-http{{ neofs_http__instance }}"
+
+# Instance name to have multiple NeoFS HTTP GW nodes on the same host
+neofs_http__instance: ''
+
+# Directory for configuration files and keys
+neofs_http__conf_dir: "/etc/neofs/http{{ neofs_http__instance }}"
+
+neofs_http__version: '0.19.0'
+neofs_http__bin_url: 'https://github.com/nspcc-dev/neofs-http-gw/releases/download/v{{ neofs_http__version }}/neofs-http-gw-linux-amd64'
+neofs_http__bin_path: '/usr/local/bin/neofs-http-gw'
+
+# Local path to wallet
+neofs_http__wallet: "wallet.json"
+# Path to wallet on the remote host
+neofs_http__wallet_path: "{{ neofs_http__conf_dir }}/wallet.json"
+neofs_http__wallet_passwd: "~"
+
+neofs_http__bind_address: '127.0.0.1'
+
+neofs_http__http_port: '8888'
+neofs_http__http_address: '{{ neofs_http__bind_address }}'
+neofs_http__http_allow: []
+neofs_http__http_group_allow: []
+neofs_http__http_host_allow: []
+
+neofs_http__neofs_nodes:
+  'localhost:8080': '1.0'
+
+neofs_http__grpc_debugging: 'false'
+neofs_http__log_level: 'info'
+neofs_http__connect_timeout: '60s'
+neofs_http__request_timeout: '300s'
+neofs_http__keepalive_timeout: '300s'
+neofs_http__keepalive_time: '120s'
+neofs_http__permit_wo_stream: true
+neofs_http__connect_ttl: '1h'
+neofs_http__rebalance_timer: '5m'
+
+neofs_http__prometheus_enabled: False
+neofs_http__prometheus_port: '5662'
+neofs_http__prometheus_address: 'localhost'
+neofs_http__prometheus_allow: []
+neofs_http__prometheus_group_allow: []
+neofs_http__prometheus_host_allow: []
+
+neofs_http__pprof_enabled: False
+neofs_http__pprof_port: '5661'
+neofs_http__pprof_address: '{{ neofs_http__bind_address }}'
+neofs_http__pprof_allow: []
+neofs_http__pprof_group_allow: []
+neofs_http__pprof_host_allow: []
+
+# Force debops.ferm run via role import
+# May be useful when you need to have multiple instances with different
+# firewall rules for each one.
+neofs_http__debops_ferm_import: False
+
+# firewall configuration to be applied with debops.ferm role
+neofs_http__ferm__dependent_rules:
+  - type: 'accept'
+    name: "neofs-http{{ neofs_http__instance }}_http"
+    dport: [ '{{ neofs_http__http_port }}' ]
+    daddr: [ '{{ neofs_http__http_address }}' ]
+    saddr: '{{ neofs_http__http_allow + neofs_http__http_group_allow + neofs_http__http_host_allow }}'
+    protocol: 'tcp'
+    role: 'neofs-http-gateway'
+    rule_state: 'present'
+
+  - type: 'accept'
+    name: "neofs-http{{ neofs_http__instance }}_prometheus"
+    dport: [ '{{ neofs_http__prometheus_port }}' ]
+    daddr: [ '{{ neofs_http__prometheus_address }}' ]
+    saddr: '{{ neofs_http__prometheus_allow + neofs_http__prometheus_group_allow + neofs_http__prometheus_host_allow }}'
+    protocol: 'tcp'
+    role: 'neofs-http'
+    rule_state: "{{ 'present' if neofs_http__prometheus_enabled else 'absent' }}"
+
+  - type: 'accept'
+    name: "neofs-http{{ neofs_http__instance }}_pprof"
+    dport: [ '{{ neofs_http__pprof_port }}' ]
+    daddr: [ '{{ neofs_http__pprof_address }}' ]
+    saddr: '{{ neofs_http__pprof_allow + neofs_http__pprof_group_allow + neofs_http__pprof_host_allow }}'
+    protocol: 'tcp'
+    role: 'neofs-http'
+    rule_state: "{{ 'present' if neofs_http__pprof_enabled else 'absent' }}"

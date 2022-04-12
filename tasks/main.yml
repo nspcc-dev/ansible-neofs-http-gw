@@ -1,0 +1,59 @@
+---
+
+- name: Create NeoFS HTTP group
+  ansible.builtin.group:
+    name: "{{ neofs_http__group }}"
+    system: yes
+
+- name: Create NeoFS HTTP user
+  ansible.builtin.user:
+    name: "{{ neofs_http__user }}"
+    group: "{{ neofs_http__group }}"
+    password: '*'
+    shell: '/usr/sbin/nologin'
+    home: "{{ neofs_http__conf_dir }}"
+    system: yes
+    skeleton: no
+
+- name: Create configuration directory parent
+  ansible.builtin.file:
+    state: directory
+    path: "{{ neofs_http__conf_dir | realpath | dirname }}"
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+
+- name: Create configuration directory
+  ansible.builtin.file:
+    state: directory
+    path: "{{ neofs_http__conf_dir }}"
+    owner: 'root'
+    group: "{{ neofs_http__group }}"
+    mode: '0750'
+
+- name: Copy NeoFS HTTP env file
+  ansible.builtin.template:
+    src: "env.j2"
+    dest: "{{ neofs_http__conf_dir }}/env"
+    owner: 'root'
+    group: "{{ neofs_http__group }}"
+    mode: '0640'
+  notify: [ 'Restart NeoFS HTTP service' ]
+
+- ansible.builtin.include_tasks: 'wallet.yml'
+
+- ansible.builtin.include_tasks: 'binary.yml'
+
+- name: Copy regular systemd unit
+  ansible.builtin.template:
+    src: "neofs-http.service.j2"
+    dest: "/etc/systemd/system/neofs-http{{ neofs_http__instance }}.service"
+  notify: [ 'Restart NeoFS HTTP service' ]
+
+- name: Force debops.ferm run
+  ansible.builtin.include_role:
+    name: debops.debops.ferm
+  vars:
+    ferm__dependent_rules:
+      - "{{ neofs_http__ferm__dependent_rules }}"
+  when: neofs_http__debops_ferm_import | bool

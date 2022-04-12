@@ -1,0 +1,9 @@
+---
+
+- name: Copy NeoFS HTTP wallet
+  ansible.builtin.copy:
+    content: "{{ neofs_http__wallet }}"
+    dest: "{{ neofs_http__wallet_path }}"
+    owner: "{{ neofs_http__user }}"
+    group: "{{ neofs_http__group }}"
+    mode: '0660'
