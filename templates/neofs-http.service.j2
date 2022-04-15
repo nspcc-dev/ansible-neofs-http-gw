@@ -1,3 +1,5 @@
+{{ ansible_managed | comment }}
+
 [Unit]
 Description=NeoFS HTTP Gateway node neofs-http{{ neofs_http__instance }}
 Requires=network.target
@@ -5,16 +7,13 @@ Requires=network.target
 [Service]
 Type=simple
 ExecStart={{ neofs_http__bin_path }}{{ ' --wallet ' + neofs_http__wallet_path if neofs_http__wallet_path is defined }}
-
 User={{ neofs_http__user }}
 Group={{ neofs_http__group }}
-Restart=always
-RestartSec=5
-StandardError=syslog
-SyslogIdentifier=neofs-http{{ neofs_http__instance }}
-PrivateTmp=true
 WorkingDirectory={{ neofs_http__conf_dir }}
 EnvironmentFile=-{{ neofs_http__conf_dir }}/env
+Restart=always
+RestartSec=5
+PrivateTmp=true
 
 [Install]
 WantedBy=multi-user.target
