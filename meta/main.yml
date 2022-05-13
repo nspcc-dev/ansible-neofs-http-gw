@@ -6,7 +6,7 @@ galaxy_info:
   role_name: 'neofs-http-gateway'
   namespace: 'nspcc'
   author: 'NSPCC Operations <ops@nspcc.ru>'
-  description: 'NeoFS HTTP Protocol Gateway'
+  description: 'NeoFS HTTP Gateway'
   company: 'NSPCC'
   license: 'GPL-3.0-or-later'
   min_ansible_version: '2.10.0'
@@ -20,5 +20,4 @@ galaxy_info:
     - neofs
     - storage
     - web
-
 dependencies: []
