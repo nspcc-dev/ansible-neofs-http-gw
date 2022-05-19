@@ -10,7 +10,7 @@ neofs_http__instance: ''
 # Directory for configuration files and keys
 neofs_http__conf_dir: "/etc/neofs/http{{ neofs_http__instance }}"
 
-neofs_http__version: '0.19.0'
+neofs_http__version: '0.20.0'
 neofs_http__bin_url: 'https://github.com/nspcc-dev/neofs-http-gw/releases/download/v{{ neofs_http__version }}/neofs-http-gw-linux-amd64'
 neofs_http__bin_path: '/usr/local/bin/neofs-http-gw'
 
