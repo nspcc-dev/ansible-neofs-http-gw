@@ -6,11 +6,10 @@ Requires=network.target
 
 [Service]
 Type=simple
-ExecStart={{ neofs_http__bin_path }}{{ ' --wallet ' + neofs_http__wallet_path if neofs_http__wallet_path is defined }}
+ExecStart={{ neofs_http__bin_path }} --config {{ neofs_http__conf_dir }}/config.yaml
 User={{ neofs_http__user }}
 Group={{ neofs_http__group }}
 WorkingDirectory={{ neofs_http__conf_dir }}
-EnvironmentFile=-{{ neofs_http__conf_dir }}/env
 Restart=always
 RestartSec=5
 PrivateTmp=true
