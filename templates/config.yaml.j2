@@ -1,0 +1,66 @@
+{{ ansible_managed | comment }}
+
+logger:
+  level: {{ neofs_http__loglevel }}
+
+{% if neofs_http__prometheus_enabled %}
+metrics: true
+{% endif %}
+
+{% if neofs_http__pprof_enabled %}
+pprof: true
+{% endif %}
+
+wallet:
+  path: {{ neofs_http__wallet_path }}
+  passphrase: {{ neofs_http__wallet_passwd }}
+{% if neofs_http__wallet_address|length %}
+  address: {{ neofs_http__wallet_address }}
+{% endif %}
+
+listen_address: '{{ neofs_http__http_address }}:{{ neofs_http__http_port }}'
+
+{% if neofs_http__tls_enabled %}
+tls_certificate: {{ neofs_http__tls_cert_file }}
+tls_key: {{ neofs_http__tls_key_file }}
+{% endif %}
+
+connect_timeout: {{ neofs_http__connect_timeout }}
+request_timeout: {{ neofs_http__request_timeout }}
+rebalance_timer: {{ neofs_http__rebalance_timer }}
+
+peers:
+{% for peer in neofs_http__peers %}
+  {{ loop.index - 1 }}:
+    address: {{ peer.address }}
+{% if 'priority' in peer %}
+    priority: {{ peer.priority }}
+{% endif %}
+{% if 'weight' in peer %}
+    weight: {{ peer.weight }}
+{% endif %}
+{% endfor %}
+
+{% if neofs_http__web %}
+web:
+  read_buffer_size: {{ neofs_http__web_read_buffer_size }}
+  write_buffer_size: {{ neofs_http__web_write_buffer_size }}
+  read_timeout: {{ neofs_http__web_read_timeout }}
+  write_timeout: {{ neofs_http__web_write_timeout }}
+  stream_request_body: {{ neofs_http__web_stream_request_body }}
+  max_request_body_size: {{ neofs_http__web_max_request_body_size }}
+{% endif %}
+
+rpc_endpoint: {{ neofs_http__neogo_rpc }}
+
+resolve_order: {{ neofs_http__resolve_order }}
+
+{% if neofs_http__upload_header_use_default_timestamp %}
+upload_header:
+  use_default_timestamp: true
+{% endif %}
+
+{% if neofs_http__zip_compression %}
+zip:
+  compression: true
+{% endif %}

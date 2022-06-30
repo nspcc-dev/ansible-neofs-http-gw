@@ -31,10 +31,10 @@
     group: "{{ neofs_http__group }}"
     mode: '0750'
 
-- name: Copy NeoFS HTTP env file
+- name: Copy NeoFS HTTP config
   ansible.builtin.template:
-    src: "env.j2"
-    dest: "{{ neofs_http__conf_dir }}/env"
+    src: "config.yaml.j2"
+    dest: "{{ neofs_http__conf_dir }}/config.yaml"
     owner: 'root'
     group: "{{ neofs_http__group }}"
     mode: '0640'

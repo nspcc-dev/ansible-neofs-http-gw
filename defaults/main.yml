@@ -10,50 +10,86 @@ neofs_http__instance: ''
 # Directory for configuration files and keys
 neofs_http__conf_dir: "/etc/neofs/http{{ neofs_http__instance }}"
 
-neofs_http__version: '0.20.0'
+neofs_http__version: '0.21.0'
 neofs_http__bin_url: 'https://github.com/nspcc-dev/neofs-http-gw/releases/download/v{{ neofs_http__version }}/neofs-http-gw-linux-amd64'
 neofs_http__bin_path: '/usr/local/bin/neofs-http-gw'
 
-# Local path to wallet
-neofs_http__wallet: "wallet.json"
-# Path to wallet on the remote host
+neofs_http__loglevel: 'info'
+
+neofs_http__prometheus_enabled: False
+#neofs_http__prometheus_port: '5662'
+#neofs_http__prometheus_address: 'localhost'
+#neofs_http__prometheus_allow: []
+#neofs_http__prometheus_group_allow: []
+#neofs_http__prometheus_host_allow: []
+
+neofs_http__pprof_enabled: False
+#neofs_http__pprof_port: '5661'
+#neofs_http__pprof_address: 'localhost'
+#neofs_http__pprof_allow: []
+#neofs_http__pprof_group_allow: []
+#neofs_http__pprof_host_allow: []
+
+# wallet content
+neofs_http__wallet: ''
+# path to wallet on the remote host
 neofs_http__wallet_path: "{{ neofs_http__conf_dir }}/wallet.json"
 neofs_http__wallet_passwd: "~"
+neofs_http__wallet_address: ''
 
-neofs_http__bind_address: '127.0.0.1'
-
+neofs_http__http_address: '0.0.0.0'
 neofs_http__http_port: '8888'
-neofs_http__http_address: '{{ neofs_http__bind_address }}'
 neofs_http__http_allow: []
 neofs_http__http_group_allow: []
 neofs_http__http_host_allow: []
 
-neofs_http__neofs_nodes:
-  'localhost:8080': '1.0'
+neofs_http__tls_enabled: False
+neofs_http__tls_cert_file: ''
+neofs_http__tls_key_file: ''
 
-neofs_http__grpc_debugging: 'false'
-neofs_http__log_level: 'info'
+# Timeout to dial node.
 neofs_http__connect_timeout: '60s'
+# Timeout to check node health during rebalance.
 neofs_http__request_timeout: '300s'
-neofs_http__keepalive_timeout: '300s'
-neofs_http__keepalive_time: '120s'
-neofs_http__permit_wo_stream: true
-neofs_http__connect_ttl: '1h'
+# Interval to check nodes health.
 neofs_http__rebalance_timer: '5m'
 
-neofs_http__prometheus_enabled: False
-neofs_http__prometheus_port: '5662'
-neofs_http__prometheus_address: 'localhost'
-neofs_http__prometheus_allow: []
-neofs_http__prometheus_group_allow: []
-neofs_http__prometheus_host_allow: []
+neofs_http__peers:
+  - address: 'localhost:8080'
+    weight: 1
+    priority: 1
 
-neofs_http__pprof_enabled: False
-neofs_http__pprof_port: '5661'
-neofs_http__pprof_address: '{{ neofs_http__bind_address }}'
-neofs_http__pprof_allow: []
-neofs_http__pprof_group_allow: []
-neofs_http__pprof_host_allow: []
+neofs_http__web: False
+# Per-connection buffer size for requests' reading.
+# This also limits the maximum header size.
+neofs_http__web_read_buffer_size: 4096
+# Per-connection buffer size for responses' writing.
+neofs_http__web_write_buffer_size: 4096
+# ReadTimeout is the amount of time allowed to read
+# the full request including body. The connection's read
+# deadline is reset when the connection opens, or for
+# keep-alive connections after the first byte has been read.
+neofs_http__web_read_timeout: 10m
+# WriteTimeout is the maximum duration before timing out
+# writes of the response. It is reset after the request handler
+# has returned.
+neofs_http__web_write_timeout: 5m
+# StreamRequestBody enables request body streaming,
+# and calls the handler sooner when given body is
+# larger then the current limit.
+neofs_http__web_stream_request_body: true
+# Maximum request body size.
+# The server rejects requests with bodies exceeding this limit.
+neofs_http__web_max_request_body_size: 4194304
+
+neofs_http__neogo_rpc: ''
+
+#neofs_http__resolve_order: [ 'nns', 'dns' ]
+
+neofs_http__upload_header_use_default_timestamp: False
+
+neofs_http__zip_compression: False
+
 
 # Force debops.ferm run via role import
 # May be useful when you need to have multiple instances with different
