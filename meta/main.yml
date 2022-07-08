@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 galaxy_info:
-  role_name: 'neofs-http-gateway'
+  role_name: 'neofs-http-gw'
   namespace: 'nspcc'
   author: 'NSPCC Operations <ops@nspcc.ru>'
   description: 'NeoFS HTTP Gateway'
