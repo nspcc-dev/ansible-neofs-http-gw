@@ -1,126 +1,91 @@
 ---
 
-# User and group for NeoFS HTTP GW to run and own files
-neofs_http__user: "neofs-http{{ neofs_http__instance }}"
-neofs_http__group: "neofs-http{{ neofs_http__instance }}"
-
-# Instance name to have multiple NeoFS HTTP GW nodes on the same host
-neofs_http__instance: ''
-
-# Directory for configuration files and keys
-neofs_http__conf_dir: "/etc/neofs/http{{ neofs_http__instance }}"
-
 neofs_http__version: '0.21.0'
 neofs_http__bin_url: 'https://github.com/nspcc-dev/neofs-http-gw/releases/download/v{{ neofs_http__version }}/neofs-http-gw-linux-amd64'
-neofs_http__bin_path: '/usr/local/bin/neofs-http-gw'
 
-neofs_http__loglevel: 'info'
+neofs_http__user: 'neofs-http'
+neofs_http__group: 'neofs-http'
 
-neofs_http__prometheus_enabled: False
-#neofs_http__prometheus_port: '5662'
-#neofs_http__prometheus_address: 'localhost'
-#neofs_http__prometheus_allow: []
-#neofs_http__prometheus_group_allow: []
-#neofs_http__prometheus_host_allow: []
+neofs_http__conf_dir: '/etc/neofs/http'
+neofs_http__bin_path: '/usr/bin'
 
-neofs_http__pprof_enabled: False
-#neofs_http__pprof_port: '5661'
-#neofs_http__pprof_address: 'localhost'
-#neofs_http__pprof_allow: []
-#neofs_http__pprof_group_allow: []
-#neofs_http__pprof_host_allow: []
+neofs_http__wallet_content: ''
+neofs_http__wallet_path: '{{ neofs_http__conf_dir }}/wallet.json'
 
-# wallet content
-neofs_http__wallet: ''
-# path to wallet on the remote host
-neofs_http__wallet_path: "{{ neofs_http__conf_dir }}/wallet.json"
-neofs_http__wallet_passwd: "~"
-neofs_http__wallet_address: ''
-
-neofs_http__http_address: '0.0.0.0'
+neofs_http__http_address: 'localhost'
 neofs_http__http_port: '8888'
 neofs_http__http_allow: []
 neofs_http__http_group_allow: []
 neofs_http__http_host_allow: []
 
-neofs_http__tls_enabled: False
-neofs_http__tls_cert_file: ''
-neofs_http__tls_key_file: ''
+neofs_http__prometheus_enabled: False
+#neofs_http__prometheus_address: 'localhost'
+#neofs_http__prometheus_port: '5662'
+#neofs_http__prometheus_allow: []
+#neofs_http__prometheus_group_allow: []
+#neofs_http__prometheus_host_allow: []
 
-# Timeout to dial node.
-neofs_http__connect_timeout: '60s'
-# Timeout to check node health during rebalance.
-neofs_http__request_timeout: '300s'
-# Interval to check nodes health.
-neofs_http__rebalance_timer: '5m'
-
-neofs_http__peers:
-  - address: 'localhost:8080'
-    weight: 1
-    priority: 1
-
-neofs_http__web: False
-# Per-connection buffer size for requests' reading.
-# This also limits the maximum header size.
-neofs_http__web_read_buffer_size: 4096
-# Per-connection buffer size for responses' writing.
-neofs_http__web_write_buffer_size: 4096
-# ReadTimeout is the amount of time allowed to read
-# the full request including body. The connection's read
-# deadline is reset when the connection opens, or for
-# keep-alive connections after the first byte has been read.
-neofs_http__web_read_timeout: 10m
-# WriteTimeout is the maximum duration before timing out
-# writes of the response. It is reset after the request handler
-# has returned.
-neofs_http__web_write_timeout: 5m
-# StreamRequestBody enables request body streaming,
-# and calls the handler sooner when given body is
-# larger then the current limit.
-neofs_http__web_stream_request_body: true
-# Maximum request body size.
-# The server rejects requests with bodies exceeding this limit.
-neofs_http__web_max_request_body_size: 4194304
-
-neofs_http__neogo_rpc: ''
-
-#neofs_http__resolve_order: [ 'nns', 'dns' ]
-
-neofs_http__upload_header_use_default_timestamp: False
-
-neofs_http__zip_compression: False
+neofs_http__pprof_enabled: False
+#neofs_http__pprof_address: 'localhost'
+#neofs_http__pprof_port: '5661'
+#neofs_http__pprof_allow: []
+#neofs_http__pprof_group_allow: []
+#neofs_http__pprof_host_allow: []
 
 
-# Force debops.ferm run via role import
-# May be useful when you need to have multiple instances with different
-# firewall rules for each one.
+neofs_http__default_config:
+  logger:
+    level: info
+  wallet:
+    path: '{{ neofs_http__wallet_path }}'
+    passphrase: ''
+  listen_address: '{{ neofs_http__http_address }}:{{ neofs_http__http_port }}'
+  rpc_endpoint: 'http://localhost:40332'
+  peers:
+    0:
+      address: 'localhost:8080'
+      priority: 1
+      weight: 1
+
+neofs_http__config: []
+neofs_http__group_config: []
+neofs_http__host_config: []
+
+neofs_http__combined_config: '{{ 
+  neofs_http__config + 
+  neofs_http__group_config +
+  neofs_http__host_config }}'
+
+
+# debops.ferm force run via role import
+# May be useful when multiple instances with different firewall rules for each one are required
 neofs_http__debops_ferm_import: False
 
 # firewall configuration to be applied with debops.ferm role
 neofs_http__ferm__dependent_rules:
   - type: 'accept'
-    name: "neofs-http{{ neofs_http__instance }}_http"
+    name: 'neofs-http{{ neofs_http__instance }}_http'
     dport: [ '{{ neofs_http__http_port }}' ]
     daddr: [ '{{ neofs_http__http_address }}' ]
     saddr: '{{ neofs_http__http_allow + neofs_http__http_group_allow + neofs_http__http_host_allow }}'
     protocol: 'tcp'
-    role: 'neofs-http-gateway'
+    role: 'neofs-http-gw'
     rule_state: 'present'
 
   - type: 'accept'
-    name: "neofs-http{{ neofs_http__instance }}_prometheus"
+    name: 'neofs-http{{ neofs_http__instance }}_prometheus'
     dport: [ '{{ neofs_http__prometheus_port }}' ]
     daddr: [ '{{ neofs_http__prometheus_address }}' ]
     saddr: '{{ neofs_http__prometheus_allow + neofs_http__prometheus_group_allow + neofs_http__prometheus_host_allow }}'
     protocol: 'tcp'
-    role: 'neofs-http'
+    role: 'neofs-http-gw'
     rule_state: "{{ 'present' if neofs_http__prometheus_enabled else 'absent' }}"
 
   - type: 'accept'
-    name: "neofs-http{{ neofs_http__instance }}_pprof"
+    name: 'neofs-http{{ neofs_http__instance }}_pprof'
     dport: [ '{{ neofs_http__pprof_port }}' ]
     daddr: [ '{{ neofs_http__pprof_address }}' ]
     saddr: '{{ neofs_http__pprof_allow + neofs_http__pprof_group_allow + neofs_http__pprof_host_allow }}'
     protocol: 'tcp'
-    role: 'neofs-http'
+    role: 'neofs-http-gw'
     rule_state: "{{ 'present' if neofs_http__pprof_enabled else 'absent' }}"
