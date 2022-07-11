@@ -1,6 +1,6 @@
 ---
 
-- name: Install NeoFS HTTP binary
+- name: Download NeoFS HTTP binary
   ansible.builtin.get_url:
     url: '{{ neofs_http__bin_url }}'
     dest: '{{ neofs_http__bin_path }}/neofs-http-gw'

@@ -1,6 +1,6 @@
 ---
 
-- ansible.builtin.include_tasks: 'user.yml'
+- ansible.builtin.include_tasks: user.yml
 
 
 - name: Create configuration directory parent
@@ -28,9 +28,9 @@
     mode: '0640'
   notify: [ 'Restart NeoFS HTTP service' ]
 
-- ansible.builtin.include_tasks: 'wallet.yml'
+- ansible.builtin.include_tasks: wallet.yml
 
-- ansible.builtin.include_tasks: 'binary.yml'
+- ansible.builtin.include_tasks: binary.yml
 
 - name: Copy systemd unit
   ansible.builtin.template:
