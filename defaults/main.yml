@@ -20,12 +20,12 @@ neofs_http__http_allow: []
 neofs_http__http_group_allow: []
 neofs_http__http_host_allow: []
 
-neofs_http__prometheus_enabled: False
-#neofs_http__prometheus_address: 'localhost'
-#neofs_http__prometheus_port: 5662
-#neofs_http__prometheus_allow: []
-#neofs_http__prometheus_group_allow: []
-#neofs_http__prometheus_host_allow: []
+neofs_http__metrics_enabled: False
+#neofs_http__metrics_address: 'localhost'
+#neofs_http__metrics_port: 5662
+#neofs_http__metrics_allow: []
+#neofs_http__metrics_group_allow: []
+#neofs_http__metrics_host_allow: []
 
 neofs_http__pprof_enabled: False
 #neofs_http__pprof_address: 'localhost'
@@ -77,13 +77,13 @@ neofs_http__ferm__dependent_rules:
     rule_state: 'present'
 
   - type: 'accept'
-    name: 'neofs-http{{ neofs_http__instance }}_prometheus'
-    dport: [ '{{ neofs_http__prometheus_port }}' ]
-    daddr: [ '{{ neofs_http__prometheus_address }}' ]
-    saddr: '{{ neofs_http__prometheus_allow + neofs_http__prometheus_group_allow + neofs_http__prometheus_host_allow }}'
+    name: 'neofs-http{{ neofs_http__instance }}_metrics'
+    dport: [ '{{ neofs_http__metrics_port }}' ]
+    daddr: [ '{{ neofs_http__metrics_address }}' ]
+    saddr: '{{ neofs_http__metrics_allow + neofs_http__metrics_group_allow + neofs_http__metrics_host_allow }}'
     protocol: 'tcp'
     role: 'neofs-http-gw'
-    rule_state: "{{ 'present' if neofs_http__prometheus_enabled else 'absent' }}"
+    rule_state: "{{ 'present' if neofs_http__metrics_enabled else 'absent' }}"
 
   - type: 'accept'
     name: 'neofs-http{{ neofs_http__instance }}_pprof'
