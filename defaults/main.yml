@@ -9,8 +9,10 @@ neofs_http__group: 'neofs-http'
 neofs_http__conf_dir: '/etc/neofs/http'
 neofs_http__bin_path: '/usr/bin'
 
-neofs_http__wallet_content: ''
+neofs_http__wallet_struct: ''
 neofs_http__wallet_path: '{{ neofs_http__conf_dir }}/wallet.json'
+neofs_http__wallet_address: ''
+neofs_http__wallet_password: ''
 
 neofs_http__http_address: 'localhost'
 neofs_http__http_port: 8888
@@ -38,9 +40,9 @@ neofs_http__raw_config:
     level: info
   wallet:
     path: '{{ neofs_http__wallet_path }}'
-    passphrase: ''
+    address: '{{ neofs_http__wallet_address }}'
+    passphrase: '{{ neofs_http__wallet_password }}'
   listen_address: '{{ neofs_http__http_address }}:{{ neofs_http__http_port }}'
-  rpc_endpoint: 'http://localhost:40332'
   peers:
     0:
       address: 'localhost:8080'
