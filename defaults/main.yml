@@ -1,6 +1,6 @@
 ---
 
-neofs_http__version: '0.21.0'
+neofs_http__version: '0.22.0'
 neofs_http__bin_url: 'https://github.com/nspcc-dev/neofs-http-gw/releases/download/v{{ neofs_http__version }}/neofs-http-gw-linux-amd64'
 
 neofs_http__user: 'neofs-http'
