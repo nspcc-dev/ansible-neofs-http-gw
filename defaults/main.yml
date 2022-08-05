@@ -106,3 +106,6 @@ neofs_http__ferm__dependent_rules:
     protocol: 'tcp'
     role: 'neofs-http-gw'
     rule_state: "{{ 'present' if neofs_http__pprof_enabled else 'absent' }}"
+
+# Flag to skip binaries download
+neofs_http__binaries_download: True
