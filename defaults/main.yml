@@ -45,7 +45,8 @@ neofs_http__raw_config:
     path: '{{ neofs_http__wallet_path }}'
     address: '{{ neofs_http__wallet_address }}'
     passphrase: '{{ neofs_http__wallet_password }}'
-  listen_address: '{{ neofs_http__http_address }}:{{ neofs_http__http_port }}'
+  server:
+    - address: '{{ neofs_http__http_address }}:{{ neofs_http__http_port }}'
   pool_error_threshold: '{{ neofs_http__pool_error_threshold }}'
   peers:
     0:
