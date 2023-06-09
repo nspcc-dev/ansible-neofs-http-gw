@@ -89,7 +89,6 @@ neofs_http__ferm__dependent_rules:
     daddr: [ '{{ neofs_http__http_address }}' ]
     saddr: '{{ neofs_http__http_allow + neofs_http__http_group_allow + neofs_http__http_host_allow }}'
     protocol: 'tcp'
-    role: 'neofs-http-gw'
     rule_state: 'present'
 
   - type: 'accept'
@@ -98,7 +97,6 @@ neofs_http__ferm__dependent_rules:
     daddr: [ '{{ neofs_http__prometheus_address }}' ]
     saddr: '{{ neofs_http__prometheus_allow + neofs_http__prometheus_group_allow + neofs_http__prometheus_host_allow }}'
     protocol: 'tcp'
-    role: 'neofs-http-gw'
     rule_state: "{{ 'present' if neofs_http__prometheus_enabled else 'absent' }}"
 
   - type: 'accept'
@@ -107,7 +105,6 @@ neofs_http__ferm__dependent_rules:
     daddr: [ '{{ neofs_http__pprof_address }}' ]
     saddr: '{{ neofs_http__pprof_allow + neofs_http__pprof_group_allow + neofs_http__pprof_host_allow }}'
     protocol: 'tcp'
-    role: 'neofs-http-gw'
     rule_state: "{{ 'present' if neofs_http__pprof_enabled else 'absent' }}"
 
 # Flag to skip binaries download
