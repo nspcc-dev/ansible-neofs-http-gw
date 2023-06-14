@@ -31,6 +31,7 @@
 - ansible.builtin.include_tasks: wallet.yml
 
 - ansible.builtin.include_tasks: binary.yml
+  when: neofs_http__binaries_download|bool
 
 - name: Copy systemd unit
   ansible.builtin.template:
@@ -44,4 +45,4 @@
   vars:
     ferm__dependent_rules:
       - '{{ neofs_http__ferm__dependent_rules }}'
-  when: neofs_http__debops_ferm_import | bool
+  when: neofs_http__debops_ferm_import|bool

@@ -9,4 +9,3 @@
     group: 'root'
     mode: '0755'
   notify: [ 'Restart NeoFS HTTP service' ]
-  when: neofs_http__binaries_download | bool
