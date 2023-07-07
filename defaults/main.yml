@@ -24,14 +24,14 @@ neofs_http__http_host_allow: []
 
 neofs_http__prometheus_enabled: False
 neofs_http__prometheus_address: 'localhost'
-neofs_http__prometheus_port: 5662
+neofs_http__prometheus_port: 9921
 neofs_http__prometheus_allow: []
 neofs_http__prometheus_group_allow: []
 neofs_http__prometheus_host_allow: []
 
 neofs_http__pprof_enabled: False
 neofs_http__pprof_address: 'localhost'
-neofs_http__pprof_port: 5661
+neofs_http__pprof_port: 9922
 neofs_http__pprof_allow: []
 neofs_http__pprof_group_allow: []
 neofs_http__pprof_host_allow: []
