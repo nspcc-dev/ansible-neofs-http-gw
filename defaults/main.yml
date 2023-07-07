@@ -46,7 +46,7 @@ neofs_http__raw_config:
     address: '{{ neofs_http__wallet_address }}'
     passphrase: '{{ neofs_http__wallet_password }}'
   server:
-    - address: '{{ neofs_http__http_address }}:{{ neofs_http__http_port }}'
+    - address: '{{ neofs_http__http_address | ansible.utils.ipwrap }}:{{ neofs_http__http_port }}'
   pool_error_threshold: '{{ neofs_http__pool_error_threshold }}'
   peers:
     0:
@@ -59,12 +59,12 @@ neofs_http__default_config:
     options:
       pprof:
         enabled: True
-        address: '{{ neofs_http__pprof_address }}:{{ neofs_http__pprof_port }}'
+        address: '{{ neofs_http__pprof_address | ansible.utils.ipwrap }}:{{ neofs_http__pprof_port }}'
   - enabled: '{{ neofs_http__prometheus_enabled }}'
     options:
       prometheus:
         enabled: True
-        address: '{{ neofs_http__prometheus_address }}:{{ neofs_http__prometheus_port }}'
+        address: '{{ neofs_http__prometheus_address | ansible.utils.ipwrap }}:{{ neofs_http__prometheus_port }}'
 
 neofs_http__config: []
 neofs_http__group_config: []
@@ -86,7 +86,7 @@ neofs_http__ferm__dependent_rules:
   - type: 'accept'
     name: 'neofs-http{{ neofs_http__instance }}_http'
     dport: [ '{{ neofs_http__http_port }}' ]
-    daddr: [ '{{ neofs_http__http_address }}' ]
+    daddr: [ "{{ neofs_http__http_address }}{{ '/0' if neofs_http__http_address in ['0.0.0.0', '::0', '::'] }}" ]
     saddr: '{{ neofs_http__http_allow + neofs_http__http_group_allow + neofs_http__http_host_allow }}'
     protocol: 'tcp'
     rule_state: 'present'
@@ -94,7 +94,7 @@ neofs_http__ferm__dependent_rules:
   - type: 'accept'
     name: 'neofs-http{{ neofs_http__instance }}_prometheus'
     dport: [ '{{ neofs_http__prometheus_port }}' ]
-    daddr: [ '{{ neofs_http__prometheus_address }}' ]
+    daddr: [ "{{ neofs_http__prometheus_address }}{{ '/0' if neofs_http__prometheus_address in ['0.0.0.0', '::0', '::'] }}" ]
     saddr: '{{ neofs_http__prometheus_allow + neofs_http__prometheus_group_allow + neofs_http__prometheus_host_allow }}'
     protocol: 'tcp'
     rule_state: "{{ 'present' if neofs_http__prometheus_enabled else 'absent' }}"
@@ -102,7 +102,7 @@ neofs_http__ferm__dependent_rules:
   - type: 'accept'
     name: 'neofs-http{{ neofs_http__instance }}_pprof'
     dport: [ '{{ neofs_http__pprof_port }}' ]
-    daddr: [ '{{ neofs_http__pprof_address }}' ]
+    daddr: [ "{{ neofs_http__pprof_address }}{{ '/0' if neofs_http__pprof_address in ['0.0.0.0', '::0', '::'] }}" ]
     saddr: '{{ neofs_http__pprof_allow + neofs_http__pprof_group_allow + neofs_http__pprof_host_allow }}'
     protocol: 'tcp'
     rule_state: "{{ 'present' if neofs_http__pprof_enabled else 'absent' }}"
