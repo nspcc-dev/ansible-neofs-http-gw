@@ -1,23 +1,19 @@
 ---
 
-- ansible.builtin.include_tasks: user.yml
-
-
-- name: Create configuration directory parent
-  ansible.builtin.file:
-    state: directory
-    path: '{{ neofs_http__conf_dir | realpath | dirname }}'
-    owner: 'root'
-    group: 'root'
-    mode: '0755'
+- name: Create NeoFS HTTP user
+  ansible.builtin.include_role:
+    name: nspcc.ansible_goodies.system_user
+  vars:
+    system_user__user: '{{ neofs_http__user }}'
+    system_user__group: '{{ neofs_http__group }}'
+    system_user__home: '{{ neofs_http__conf_dir }}'
 
 - name: Create configuration directory
-  ansible.builtin.file:
-    state: directory
-    path: '{{ neofs_http__conf_dir }}'
-    owner: 'root'
-    group: '{{ neofs_http__group }}'
-    mode: '0750'
+  ansible.builtin.include_role:
+    name: nspcc.ansible_goodies.mkprivdir
+  vars:
+    mkprivdir__dir: '{{ neofs_http__conf_dir }}'
+    mkprivdir__group: '{{ neofs_http__group }}'
 
 - name: Copy NeoFS HTTP config
   ansible.builtin.template:
@@ -31,7 +27,7 @@
 - ansible.builtin.include_tasks: wallet.yml
 
 - ansible.builtin.include_tasks: binary.yml
-  when: neofs_http__binaries_download|bool
+  when: not neofs_http__configure_only|bool
 
 - name: Copy systemd unit
   ansible.builtin.template:
