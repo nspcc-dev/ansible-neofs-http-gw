@@ -1,7 +1,13 @@
 ---
 
-neofs_http__version: '0.23.0'
-neofs_http__bin_url: 'https://github.com/nspcc-dev/neofs-http-gw/releases/download/v{{ neofs_http__version }}/neofs-http-gw-linux-amd64'
+neofs_http__version: 'latest'
+
+neofs_http__github_org: 'nspcc-dev'
+neofs_http__github_repo: 'neofs-http-gw'
+neofs_http__github_asset_name: 'neofs-http-gw-linux-amd64'
+
+# Flag to skip binaries download
+neofs_http__configure_only: False
 
 neofs_http__instance: ''
 
@@ -106,6 +112,3 @@ neofs_http__ferm__dependent_rules:
     saddr: '{{ neofs_http__pprof_allow + neofs_http__pprof_group_allow + neofs_http__pprof_host_allow }}'
     protocol: 'tcp'
     rule_state: "{{ 'present' if neofs_http__pprof_enabled else 'absent' }}"
-
-# Flag to skip binaries download
-neofs_http__binaries_download: True

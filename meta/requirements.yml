@@ -1,0 +1,4 @@
+---
+collections:
+- name: https://github.com/nspcc-dev/ansible-goodies
+  type: git
